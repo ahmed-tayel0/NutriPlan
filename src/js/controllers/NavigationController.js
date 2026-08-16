@@ -10,13 +10,12 @@ export default class NavigationController {
 
   setupRouting() {
     window.addEventListener("popstate", () => {
-      const route = this.navigationController.getPageFromURL();
+      const route = this.getPageFromURL();
       if (route.type === "meal-detail") {
-        this.navigationController.loadMealFromSlug(route.slug);
+        this.loadMealFromSlug(route.slug);
       } else {
-        this.navigationController.navigateTo(
-          route.type === "meals" ? "meals" : route.type,
-        );
+        this.renderPage(route.type);
+        this.updateActiveNavLink(route.type);
       }
     });
   }
