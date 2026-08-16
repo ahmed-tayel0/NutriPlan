@@ -1,10 +1,11 @@
-//  NAVIGATION CONTROLLER 
+//  NAVIGATION CONTROLLER
 
-import { slugify } from '../utils/Helpers.js';
+import { slugify } from "../utils/Helpers.js";
 
 export default class NavigationController {
   constructor(app) {
     this.app = app;
+    this.basePath = "/NutriPlan";
   }
 
   setupRouting() {
@@ -20,7 +21,10 @@ export default class NavigationController {
   }
 
   getPageFromURL() {
-    const path = window.location.pathname.replace(/^\//, "").replace(/\/$/, "");
+    const path = window.location.pathname
+      .replace(this.basePath, "")
+      .replace(/^\//, "")
+      .replace(/\/$/, "");
 
     if (path.startsWith("meal/")) {
       return { type: "meal-detail", slug: path.replace("meal/", "") };
@@ -55,9 +59,9 @@ export default class NavigationController {
   navigateTo(page) {
     let path;
     if (page === "meals") {
-      path = "/home";
+      path = `${this.basePath}/home`;
     } else {
-      path = `/${page}`;
+      path = `${this.basePath}/${page}`;
     }
 
     if (window.location.pathname !== path) {
@@ -68,7 +72,7 @@ export default class NavigationController {
   }
 
   navigateToMeal(meal) {
-    const path = `/meal/${slugify(meal.strMeal)}`;
+    const path = `${this.basePath}/meal/${slugify(meal.strMeal)}`;
     this.app.stateManager.updateAppState({ selectedMealId: meal.idMeal });
     window.history.pushState(
       { page: "meal-detail", mealId: meal.idMeal },
