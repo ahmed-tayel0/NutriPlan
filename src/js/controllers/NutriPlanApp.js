@@ -104,8 +104,15 @@ export default class NutriPlanApp {
     this.setupEventListeners();
     this.navigationController.setupRouting();
 
-    if (window.location.pathname === "/" || window.location.pathname === "") {
-      window.history.replaceState({ page: "meals" }, "", "/home");
+    if (
+      window.location.pathname === this.navigationController.basePath ||
+      window.location.pathname === `${this.navigationController.basePath}/`
+    ) {
+      window.history.replaceState(
+        { page: "meals" },
+        "",
+        `${this.navigationController.basePath}/home`,
+      );
     }
 
     try {
@@ -115,8 +122,7 @@ export default class NutriPlanApp {
       if (currentRoute.type === "meal-detail" && currentRoute.slug) {
         await this.navigationController.loadMealFromSlug(currentRoute.slug);
       } else {
-        this.navigationController.renderPage(currentRoute.type);
-        this.navigationController.updateActiveNavLink(currentRoute.type);
+        this.navigationController.navigateTo(currentRoute.type);
       }
     } catch (error) {
       console.error("App initialization error:", error);
@@ -279,3 +285,42 @@ export default class NutriPlanApp {
     setTimeout(() => toast.remove(), 3000);
   }
 }
+
+//  MOBILE SIDEBAR CONTROLLER
+
+function initMobileSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("sidebar-overlay");
+  const openBtn = document.getElementById("header-menu-btn");
+  const closeBtn = document.getElementById("sidebar-close-btn");
+
+  if (!sidebar || !overlay || !openBtn) return;
+
+  const openSidebar = () => {
+    sidebar.classList.add("open");
+    overlay.classList.add("active");
+    document.body.style.overflow = "hidden";
+  };
+
+  const closeSidebar = () => {
+    sidebar.classList.remove("open");
+    overlay.classList.remove("active");
+    document.body.style.overflow = "";
+  };
+
+  openBtn.addEventListener("click", openSidebar);
+  closeBtn?.addEventListener("click", closeSidebar);
+  overlay.addEventListener("click", closeSidebar);
+
+  // Close the sidebar automatically when a nav link is tapped on mobile
+  sidebar.querySelectorAll(".nav-link").forEach((link) => {
+    link.addEventListener("click", closeSidebar);
+  });
+
+  // Close it if the viewport is resized back to desktop width
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 1024) closeSidebar();
+  });
+}
+
+document.addEventListener("DOMContentLoaded", initMobileSidebar);

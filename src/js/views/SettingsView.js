@@ -1,4 +1,4 @@
-//  SETTINGS VIEW (User profile, nutrition goals, hydration, activity level)
+//  SETTINGS VIEW 
 
 export default class SettingsView {
   constructor(app) {
