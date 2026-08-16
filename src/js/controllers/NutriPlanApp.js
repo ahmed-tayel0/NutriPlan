@@ -44,12 +44,12 @@ export default class NutriPlanApp {
       foodlog: "foodlog",
     };
 
-    // Controllers 
+    // Controllers
     this.navigationController = new NavigationController(this);
     this.searchController = new SearchController(this);
     this.modalController = new ModalController(this);
 
-    // Views 
+    // Views
     this.mealsView = new MealsView(this);
     this.mealDetailView = new MealDetailView(this);
     this.productsView = new ProductsView(this);
@@ -59,8 +59,7 @@ export default class NutriPlanApp {
     this.init();
   }
 
-  // Public accessors for shared services & state 
-  
+  // Public accessors for shared services & state
 
   get mealDbService() {
     return this.#mealDbService;
@@ -192,7 +191,9 @@ export default class NutriPlanApp {
             const targetPage = href.replace("/", "");
 
             if (targetPage && this.routes[targetPage]) {
-              const formattedUrl = `/foodlog#${targetPage}`;
+              const repoName = window.location.pathname.split("/")[1] || "";
+              const basePath = repoName ? `/${repoName}` : "";
+              const formattedUrl = `${basePath}/${targetPage}`;
 
               window.history.pushState({ page: targetPage }, "", formattedUrl);
               this.navigationController.renderPage(targetPage);
